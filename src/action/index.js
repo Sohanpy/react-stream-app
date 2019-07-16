@@ -1,5 +1,6 @@
 import streams from '../api/strems'
 import strems from '../api/strems';
+import history from '../history';
 import {CREATE_STREAM,FETCH_STREAMS,FETCH_STREAM,DELETE_STREAM,EDIT_STREAM} from './types'
 
 export const signIn = (userId) => {
@@ -16,9 +17,11 @@ export const signOut = () => {
 }
 
 //ei action gula api theke data fetch kortese
-export const createStreame = formValues => async dispatch => {
-    const response = await streams.post('/streams' , formValues);
+export const createStreame = formValues => async (dispatch , getState) => {
+    const { userId } = getState().auth;
+    const response = await streams.post('/streams' , {...formValues , userId});
     dispatch({ type: CREATE_STREAM , payload:response.data })
+    history.push('/')//programmatic navigation --->248-250 
 }
 
 export const fetchStrems = () => async dispatch => {
