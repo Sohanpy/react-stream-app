@@ -1,21 +1,42 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react'
+import { connect } from 'react-redux';
+//import { Link } from 'react-router-dom';
 
+import { fetchStrems } from '../../action';
+import strems from '../../api/strems';
 
-const StreamList = () => {
-    return (
-        <div>StreamList
-        <Link to="/streams/new">Create</Link>
-        <br />
-        <Link to="/streams/edit">edit</Link>
-        <br />
-        <Link to="/streams/delete">delete</Link>
-        <br />
-        <Link to="/streams/show">show</Link>
-        <br />
+class Streamlist extends Component {
+    componentDidMount() {
+        this.props.fetchStrems();
+    }
 
-        </div>
-    )
+    renderList() {
+        return this.props.streams.map(stream => {
+            return (
+                <div className="item" key={stream.id}>
+                    <i className="large middle aligned icon camera" />
+                    <div className="content">
+                        {stream.title}
+                        <div className="description">{stream.description}</div>
+                    </div>
+                </div>
+            )
+        })
+    }
+
+    render() {
+        //console.log(this.props.streams);
+        return (
+            <div>
+                <h2>Streams</h2>
+                <div className="ui celled list">{this.renderList()}</div>
+            </div>
+        )
+    }
 }
 
-export default StreamList;
+const mapStateToProps = state => {
+    return { streams: Object.values(state.stream) };
+};
+
+export default connect(mapStateToProps, { fetchStrems })(Streamlist);
